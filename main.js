@@ -97,6 +97,17 @@ class Data {
         this.init()
     }
 
+    updateInClientList(args) {
+        const sql = `UPDATE ClientDatabase SET Name=?, Date=?, ServiceID=?, Description=?
+                        WHERE id=?`
+        const data = [args.name, args.date, args.sID, args.description, args.id]
+
+        this.database.each(sql, data, (err) => {
+            if (err) console.log(err);
+        })
+        this.init()
+    }
+
     openShift() {
         this.isShiftOpened = true;
         const sql = `INSERT INTO IncomeDatabase (Date, TotalIncome, Cashbox, CashIncome, 
@@ -186,7 +197,11 @@ app.get('/settings', (req, res) => {
 
 app.post('/clients', jsonParser, (req, res) => {
     data.insertIntoClientList(req.body);
-    console.log(req.body)
+    res.sendStatus(200);
+})
+
+app.post('/clients/edit', jsonParser, (req, res) => {
+    data.updateInClientList(req.body);
     res.sendStatus(200);
 })
 
